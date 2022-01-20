@@ -1,38 +1,9 @@
 import React from "react";
-import { useLocalStorageState } from "../functions/utils";
-import {
-  calculateStatus,
-  calculateNextValue,
-  calculateWinner,
-} from "../functions/boardFunctions";
 
-const Board = () => {
-  const initialSquares = Array(9).fill(null);
-
-  //  squares is the state for this component. Add useState for squares
-  const [squares, setSquares] = useLocalStorageState("squares", initialSquares);
-
-  const nextValue = calculateNextValue(squares);
-  const winner = calculateWinner(squares);
-  const status = calculateStatus(winner, squares, nextValue);
-
-  function selectSquare(square) {
-    if (winner || squares[square]) {
-      return;
-    }
-
-    const squaresCopy = [...squares];
-    squaresCopy[square] = nextValue;
-    setSquares(squaresCopy);
-  }
-
-  function restart() {
-    setSquares(initialSquares);
-  }
-
+const Board = ({ onClick, squares }) => {
   function renderSquare(i) {
     return (
-      <button className="square" onClick={() => selectSquare(i)}>
+      <button className="square" onClick={() => onClick(i)}>
         {squares[i]}
       </button>
     );
@@ -40,7 +11,6 @@ const Board = () => {
 
   return (
     <div>
-      <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -56,9 +26,6 @@ const Board = () => {
         {renderSquare(7)}
         {renderSquare(8)}
       </div>
-      <button className="restart" onClick={restart}>
-        restart
-      </button>
     </div>
   );
 };
